@@ -1,0 +1,37 @@
+<resources>
+    <string name="app_name">FishingLureSelector</string>
+    <string name="select_spot">Select Fishing Spot</string>
+    <string name="new_report">Create New Report</string>
+    <string name="new_spot">Create New Spot</string>
+    <string name="view_past">View Past Logs</string>
+    <string name="title_activity_select_spot">ScrollingActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_select_log">ScrollingActivity</string>
+    <string name="spot_type_prompt">Select Waterbody Type</string>
+    <string name="spot_size_prompt">Select Waterbody Size</string>
+    <string name="bottom_comp_prompt">Select Waterbody Type</string>
+    <string name="create_spot_button_text">Create Spot</string>
+    <string name="spot_name_prompt">Enter Spot Name</string>
+
+    <string-array name="spot_type_array">
+        <item>Lake/Pond</item>
+        <item>River/Creek</item>
+    </string-array>
+
+    <string-array name="water_size_array">
+        <item>Very Small</item>
+        <item>Small</item>
+        <item>Medium</item>
+        <item>Large</item>
+        <item>Very Large</item>
+    </string-array>
+
+    <string-array name="bottom_comp_array">
+        <item>Boulders</item>
+        <item>Rocks</item>
+        <item>Pebbles</item>
+        <item>Hard Mud</item>
+        <item>Soft Mud</item>
+        <item>Sand</item>
+    </string-array>
+</resources>
