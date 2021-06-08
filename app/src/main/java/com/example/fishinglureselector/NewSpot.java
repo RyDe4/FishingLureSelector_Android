@@ -1,34 +1,32 @@
 package com.example.fishinglureselector;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
-import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.Toast;
-
-import com.google.android.material.textfield.TextInputLayout;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.List;
+import java.util.concurrent.Executor;
 
 public class NewSpot extends AppCompatActivity {
 
     private FishSpot spot = new FishSpot();
+
+    private SelectSpotViewModel model = new SelectSpotViewModel(this.getApplication());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,10 +86,16 @@ public class NewSpot extends AppCompatActivity {
         EditText spotNameText = (EditText)findViewById(R.id.spotNameText);
         String newButtonText = spotNameText.getText().toString();
         this.spot.setName(newButtonText);
-        spot.setName(newButtonText);
         Intent intent = new Intent(NewSpot.this, SelectSpot.class);
-//        writeToFile(newButtonText + "\n", NewSpot.this);
-        writeToJson();
+
+        SpotDataEntry newSpot = new SpotDataEntry();
+        newSpot.spotName = spot.getName();
+        newSpot.bottom = spot.getBottom();
+        newSpot.size = spot.getSize();
+        newSpot.typeCode = spot.getTypeCode();
+
+        model.insert(newSpot);
+
         startActivity(intent);
     }
 
@@ -108,18 +112,4 @@ public class NewSpot extends AppCompatActivity {
         }
     }
 
-    private void writeToJson() {
-        JSONObject spotObj = new JSONObject();
-        try {
-            spotObj.put("name", this.spot.getName());
-            spotObj.put("size", this.spot.getSize());
-            spotObj.put("type", this.spot.getTypeCode());
-            spotObj.put("bottom", this.spot.getBottom());
-
-            String spotStr = spotObj.toString();
-            writeToFile(spotStr, this);
-        } catch (JSONException e) {
-            Log.e("Exception", "Issue creating JSON: " + e.toString());
-        }
-    }
 }

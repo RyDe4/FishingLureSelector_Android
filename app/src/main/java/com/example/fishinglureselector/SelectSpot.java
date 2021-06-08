@@ -9,7 +9,11 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,63 +24,50 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class SelectSpot extends AppCompatActivity {
+
+    private SelectSpotViewModel model;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_spot);
-        buildButtons(SelectSpot.this);
+        model = new SelectSpotViewModel(getApplication());
+        buildButtonsFromDb();
     }
 
 
     public void newSpotButtonOnClick(View view) {
-
-
         Intent intent = new Intent(SelectSpot.this, NewSpot.class);
         startActivity(intent);
-
     }
 
-    private void buildButtons(Context context){
-        FishSpot jsonSpot;
-        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.spot_lin_layout);
-        ArrayList<String> spotName = retrieveJSON("buttonNames.json");
-        if (spotName != null) {
-            int len = spotName.size();
-            for (int i = 0; i < len; i ++) {
-                Button btnTag = new Button(this);
-                btnTag.setLayoutParams(new LinearLayout.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT,
-                        ActionBar.LayoutParams.WRAP_CONTENT));
-                btnTag.setText(spotName.get(i));
-                linearLayout.addView(btnTag);
+
+    private void buildButtonsFromDb() {
+        /*Create a button for each spot in the database and add it to the linear layout view*/
+        LiveData<List<SpotDataEntry>> spotsData = model.getAllSpots();
+        List<SpotDataEntry> spots = spotsData.getValue();
+
+        model.getAllSpots().observe(this, new Observer<List<SpotDataEntry>>() {
+            @Override
+            public void onChanged(@Nullable final List<SpotDataEntry> spots) {
+                LinearLayout linearLayout = (LinearLayout) findViewById(R.id.spot_lin_layout);
+                if (spots != null) {
+                    int len = spots.size();
+                    for (int i = 0; i < len; i++) {
+                        Button btnTag = new Button(SelectSpot.this);
+                        btnTag.setLayoutParams(new LinearLayout.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT,
+                                ActionBar.LayoutParams.WRAP_CONTENT));
+                        btnTag.setText(spots.get(i).spotName);
+                        linearLayout.addView(btnTag);
+                    }
+                }
             }
-        }
+        });
+
+
     }
 
-    private ArrayList<String> retrieveJSON(String fileName) {
-        File file = new File(getFilesDir().toString() + "/" + fileName);
-        FileReader fileReader;
-        ArrayList spotList = new ArrayList();
-        try {
-            fileReader = new FileReader(file);
-            BufferedReader bufferedReader = new BufferedReader(fileReader);
-            String line = bufferedReader.readLine();
-            JSONObject spot = (JSONObject) new JSONTokener(line).nextValue();
-            spotList.add(spot.getString("name"));
-            line = bufferedReader.readLine();
-            int count = 1;
-            while (line != null) {
-                spotList.add(((JSONObject) new JSONTokener(line).nextValue()).getString("name"));
-                line = bufferedReader.readLine();
-                count++;
-            }
-        bufferedReader.close();
-        } catch (IOException | JSONException e) {
-            e.printStackTrace();
-            return null;
-        }
-        return spotList;
-    }
 }

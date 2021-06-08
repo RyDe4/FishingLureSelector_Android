@@ -1,5 +1,7 @@
 package com.example.fishinglureselector;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
@@ -14,6 +16,9 @@ public interface FishDbAccessor {
     @Query("SELECT * FROM SpeciesDataEntry WHERE speciesName = :speciesName")
     public List<SpeciesDataEntry> getSpeciesPrefs(String speciesName);
 
+    @Query("SELECT * FROM SpotDataEntry")
+    public LiveData<List<SpotDataEntry>> getAllSpots();
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     public void insertCatch(CatchDataEntry ... catches);
 
@@ -22,4 +27,7 @@ public interface FishDbAccessor {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     public void insertLure(LureDataEntry ... lures);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    public void insertSpot(SpotDataEntry ... spots);
 }

@@ -1,12 +1,14 @@
 package com.example.fishinglureselector;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity
 public class SpotDataEntry {
     @PrimaryKey
-    public int spotId;
+    @NonNull
+    public String spotName;
 
     public int typeCode;
 

@@ -1,6 +1,7 @@
 package com.example.fishinglureselector;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.room.Room;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +13,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        DataBaseSingleton dataBaseSingleton = new DataBaseSingleton();
+        if (dataBaseSingleton.getFishDb() == null) {
+            FishDatabase db = Room.databaseBuilder(getApplicationContext(),
+                    FishDatabase.class, "database-name").build();
+            dataBaseSingleton.setFishDb(db);
+        }
     }
 
     public void viewLogsButtonOnClick(View view) {
